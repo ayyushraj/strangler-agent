@@ -1,0 +1,110 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  # Local orchestrator / bot can re-trigger remote validation after pushing fixes:
+  #   gh api repos/{owner}/{repo}/dispatches \
+  #     -f event_type=strangler-revalidate \
+  #     -f client_payload='{"reason":"agent-self-heal"}'
+  repository_dispatch:
+    types: [strangler-revalidate]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test-validate:
+    name: Build, smoke, validate PR status
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      statuses: write
+
+    steps:
+      - name: Checkout strangler-agent
+        uses: actions/checkout@v4
+        with:
+          path: strangler-agent
+
+      - name: Checkout ast-context (sibling indexer)
+        uses: actions/checkout@v4
+        with:
+          repository: ayyushraj/ast-context-mcp
+          path: ast-context
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: |
+            strangler-agent/package-lock.json
+            ast-context/package-lock.json
+
+      - name: Build ast-context
+        working-directory: ast-context
+        run: |
+          npm install
+          npm run build
+
+      - name: Install strangler-agent
+        working-directory: strangler-agent
+        run: npm install
+
+      - name: Build strangler-agent
+        working-directory: strangler-agent
+        run: npm run build
+
+      - name: Smoke (self-healing orchestrator loop)
+        working-directory: strangler-agent
+        env:
+          AST_CONTEXT_BIN: node ${{ github.workspace }}/ast-context/dist/cli.js
+        run: npm run smoke
+
+      - name: Validate campaign / PR status
+        id: validate
+        working-directory: strangler-agent
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          node scripts/ci-validate-pr.mjs \
+            --root fixtures/demo-monolith \
+            --require-campaign \
+            --comment
+
+      - name: Upload strangler CI status artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: strangler-ci-status
+          path: |
+            strangler-agent/fixtures/demo-monolith/.strangler/ci-status.json
+            strangler-agent/fixtures/demo-monolith/.strangler/campaign.json
+          if-no-files-found: warn
+
+      - name: Notify local orchestrator (dispatch echo)
+        if: always()
+        working-directory: strangler-agent
+        run: |
+          echo "strangler_ok=${{ steps.validate.outputs.strangler_ok }}"
+          echo "strangler_state=${{ steps.validate.outputs.strangler_state }}"
+          echo "strangler_attempts=${{ steps.validate.outputs.strangler_attempts }}"
+          mkdir -p .strangler
+          cat > .strangler/ci-notify.json <<EOF
+          {
+            "event": "${{ github.event_name }}",
+            "ok": "${{ steps.validate.outputs.strangler_ok }}",
+            "state": "${{ steps.validate.outputs.strangler_state }}",
+            "campaignId": "${{ steps.validate.outputs.strangler_campaign_id }}",
+            "attempts": "${{ steps.validate.outputs.strangler_attempts }}",
+            "runUrl": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+            "hint": "Local orchestrator: poll this artifact or re-dispatch strangler-revalidate after fixing"
+          }
+          EOF
+          cat .strangler/ci-notify.json

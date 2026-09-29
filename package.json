@@ -11,7 +11,8 @@
     "build": "tsc",
     "dev": "tsx src/cli.ts",
     "start": "node dist/cli.js",
-    "smoke": "npm run build && node scripts/smoke.mjs"
+    "smoke": "npm run build && node scripts/smoke.mjs",
+    "ci:validate": "node scripts/ci-validate-pr.mjs"
   },
   "engines": {
     "node": ">=22"

@@ -6,7 +6,7 @@ import { z } from "zod";
 export const CampaignConfigSchema = z.object({
   testCommand: z.string().default("npm test"),
   ciCommand: z.string().default("npm test"),
-  maxAttempts: z.number().int().positive().default(5),
+  maxAttempts: z.number().int().positive().default(3),
   backend: z.enum(["cursor", "noop"]).default("noop"),
   model: z.string().default("composer-2.5"),
   astContextBin: z.string().optional(),

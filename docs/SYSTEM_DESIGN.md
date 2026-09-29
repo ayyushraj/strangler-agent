@@ -32,14 +32,25 @@ We do **not** claim full semantic equivalence. Gates enforce:
 
 Behavioral correctness is the **test oracle** (`testCommand` / `ciCommand`).
 
-## Agent loop
+## Agent loop (3-strike self-healing)
 
 1. Checkpoint
-2. Agent extract (or fix prompt with AST report / test stack)
+2. Agent extract (or fix prompt with AST report / test stack / compiler+test stderr)
 3. Re-index + AST gates
 4. On AST fail → fix prompt (dedupe by digest; escalate/rollback on repeat)
-5. On AST pass → run tests; feed stderr/stack on failure
-6. On green → optional CI → mark green checkpoint → PR gate
+5. On AST pass → run `testCommand`; feed stderr/stack on failure
+6. Optional local `ciCommand` gate
+7. On green → mark green checkpoint → PR gate
+8. Hard stop: `maxAttempts` default **3**, or same failure digest twice → `git reset --hard` to last green/base
+
+## GitHub Actions CI/CD
+
+`.github/workflows/ci.yml` runs on PRs and `main`:
+
+1. Build strangler-agent + sibling `ast-context`
+2. Run smoke (full orchestrator loop with noop backend)
+3. `scripts/ci-validate-pr.mjs` asserts campaign state is green and writes Action outputs / PR comment
+4. `repository_dispatch` type `strangler-revalidate` lets a local orchestrator (or bot) re-trigger remote validation after pushing fixes
 
 ## Pluggable backends
 

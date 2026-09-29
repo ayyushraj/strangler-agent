@@ -44,7 +44,7 @@ The noop backend applies a deterministic inventory extraction (facade + `service
 ```yaml
 testCommand: npm test
 ciCommand: npm test
-maxAttempts: 5
+maxAttempts: 3          # 3-strike policy; same failure digest also rolls back early
 backend: noop          # or cursor
 model: composer-2.5
 createPr: false
@@ -55,9 +55,10 @@ dryRun: true
 
 - Work on branch `strangler/<campaign-id>`
 - Checkpoint tags `strangler/cp/<id>/<n>` before each agent attempt
-- Rollback to last green checkpoint (or base) when attempts/digests exhaust
+- **3-strike** self-correction: agent gets failure stack/AST report; after 3 attempts (or a repeated failure digest) → deterministic git rollback
 - AST gates: export coverage, signature stability, caller continuity, topology
-- PR only after AST + tests (+ optional CI) pass
+- Local `testCommand` / `ciCommand` must pass before PR
+- GitHub Actions (`.github/workflows/ci.yml`) re-validates build, smoke, and campaign/PR status on every PR
 
 See [docs/SYSTEM_DESIGN.md](docs/SYSTEM_DESIGN.md).
 
