@@ -15,8 +15,8 @@ import { runAnalyzeOnly, runPipeline } from "./orchestrator/pipeline.js";
 const program = new Command();
 
 program
-  .name("mono-cut")
-  .description("Monolith-to-microservice refactoring orchestration harness")
+  .name("strangler-agent")
+  .description("Strangler Fig refactoring engine — agentic monolith-to-microservice extraction")
   .version("0.1.0");
 
 program
@@ -31,7 +31,7 @@ program
       createPr: false,
     });
     createCampaign(root, cfg);
-    console.log(`Initialized mono-cut in ${root}`);
+    console.log(`Initialized strangler-agent in ${root}`);
     console.log(`Wrote campaign.yaml (backend=${cfg.backend}, dryRun=${cfg.dryRun})`);
   });
 

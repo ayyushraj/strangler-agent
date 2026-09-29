@@ -1,10 +1,10 @@
 {
-  "name": "mono-cut",
+  "name": "strangler-agent",
   "version": "0.1.0",
-  "description": "Automated monolith-to-microservice refactoring engine — orchestration, AST gates, agent loops, rollback, PR on green",
+  "description": "Strangler Fig refactoring engine — agentic monolith-to-microservice extraction with AST gates, validation loops, rollback, PR on green",
   "type": "module",
   "bin": {
-    "mono-cut": "./bin/mono-cut.js"
+    "strangler-agent": "./bin/strangler-agent.js"
   },
   "main": "./dist/cli.js",
   "scripts": {

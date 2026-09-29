@@ -19,8 +19,8 @@ export type CampaignConfig = z.infer<typeof CampaignConfigSchema>;
 
 export const DEFAULT_CONFIG: CampaignConfig = CampaignConfigSchema.parse({});
 
-export function monoCutDir(root: string): string {
-  return join(resolve(root), ".mono-cut");
+export function stranglerDir(root: string): string {
+  return join(resolve(root), ".strangler");
 }
 
 export function campaignYamlPath(root: string): string {
@@ -28,11 +28,11 @@ export function campaignYamlPath(root: string): string {
 }
 
 export function campaignStatePath(root: string): string {
-  return join(monoCutDir(root), "campaign.json");
+  return join(stranglerDir(root), "campaign.json");
 }
 
 export function eventsPath(root: string): string {
-  return join(monoCutDir(root), "events.jsonl");
+  return join(stranglerDir(root), "events.jsonl");
 }
 
 export function loadConfig(root: string): CampaignConfig {
@@ -49,7 +49,7 @@ export function writeDefaultConfig(root: string, overrides: Partial<CampaignConf
   const abs = resolve(root);
   mkdirSync(abs, { recursive: true });
   writeFileSync(campaignYamlPath(abs), stringifyYaml(cfg));
-  mkdirSync(monoCutDir(abs), { recursive: true });
+  mkdirSync(stranglerDir(abs), { recursive: true });
   return cfg;
 }
 

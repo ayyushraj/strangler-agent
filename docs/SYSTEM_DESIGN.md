@@ -1,4 +1,4 @@
-# mono-cut system design
+# strangler-agent system design
 
 ## Goal
 
@@ -19,7 +19,7 @@ Run multi-step monolith → microservice extractions with agent assistance, whil
 
 `initialized → indexed → planned → extracting → validating → green → pr_opened | rolled_back | failed`
 
-State lives in `<root>/.mono-cut/campaign.json`; audit trail in `events.jsonl`.
+State lives in `<root>/.strangler/campaign.json`; audit trail in `events.jsonl`.
 
 ## AST gates (honesty bound)
 

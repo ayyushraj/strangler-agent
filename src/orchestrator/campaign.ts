@@ -10,7 +10,7 @@ import { resolve } from "node:path";
 import {
   campaignStatePath,
   eventsPath,
-  monoCutDir,
+  stranglerDir,
   type CampaignConfig,
 } from "../config.js";
 import type { ExtractionCandidate } from "../analyzer/seam-finder.js";
@@ -45,7 +45,7 @@ export interface CampaignState {
 
 export function createCampaign(root: string, _cfg: CampaignConfig): CampaignState {
   const abs = resolve(root);
-  mkdirSync(monoCutDir(abs), { recursive: true });
+  mkdirSync(stranglerDir(abs), { recursive: true });
   const id = randomUUID().slice(0, 8);
   const now = new Date().toISOString();
   const state: CampaignState = {
@@ -53,7 +53,7 @@ export function createCampaign(root: string, _cfg: CampaignConfig): CampaignStat
     root: abs,
     state: "initialized",
     baseRef: null,
-    workBranch: `mono-cut/${id}`,
+    workBranch: `strangler/${id}`,
     candidateId: null,
     candidate: null,
     attempt: 0,
@@ -77,7 +77,7 @@ export function loadCampaign(root: string): CampaignState | null {
 
 export function saveCampaign(state: CampaignState): void {
   state.updatedAt = new Date().toISOString();
-  mkdirSync(monoCutDir(state.root), { recursive: true });
+  mkdirSync(stranglerDir(state.root), { recursive: true });
   writeFileSync(campaignStatePath(state.root), JSON.stringify(state, null, 2));
 }
 
@@ -96,7 +96,7 @@ export function appendEvent(
   root: string,
   event: Record<string, unknown>
 ): void {
-  mkdirSync(monoCutDir(root), { recursive: true });
+  mkdirSync(stranglerDir(root), { recursive: true });
   appendFileSync(
     eventsPath(root),
     JSON.stringify({ ...event, at: new Date().toISOString() }) + "\n"

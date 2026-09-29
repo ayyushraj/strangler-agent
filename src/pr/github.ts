@@ -15,7 +15,7 @@ export function buildPrBody(
   candidate: ExtractionCandidate
 ): string {
   return `## Summary
-- Automated mono-cut extraction of \`${candidate.id}\` (\`${candidate.directory}\`)
+- Automated strangler-agent extraction of \`${candidate.id}\` (\`${candidate.directory}\`)
 - Campaign \`${state.id}\` on branch \`${state.workBranch}\`
 - Attempts: ${state.attempt}; green checkpoint: \`${state.lastGreenCheckpoint ?? "n/a"}\`
 
@@ -37,7 +37,7 @@ export async function createPullRequest(opts: {
 }): Promise<PrResult> {
   const { state, candidate, cfg } = opts;
   const body = buildPrBody(state, candidate);
-  const title = `mono-cut: extract ${candidate.id}`;
+  const title = `strangler-agent: extract ${candidate.id}`;
 
   if (cfg.dryRun || !cfg.createPr) {
     return { created: false, body, dryRun: true };

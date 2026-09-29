@@ -1,6 +1,6 @@
-# mono-cut
+# strangler-agent
 
-Automated **monolith-to-microservice** refactoring harness: static analysis via [ast-context](../ast-context), pluggable agent backends (Cursor SDK or offline noop), AST + test validation loops, git checkpoints/rollback, and PR creation only when gates are green.
+Automated **Strangler Fig** refactoring engine: agentic monolith-to-microservice extraction with static analysis via [ast-context](../ast-context), pluggable agent backends (Cursor SDK or offline noop), AST + test validation loops, git checkpoints/rollback, and PR creation only when gates are green.
 
 ## Requirements
 
@@ -12,7 +12,7 @@ Automated **monolith-to-microservice** refactoring harness: static analysis via 
 ## Install
 
 ```bash
-cd mono-cut
+cd strangler-agent
 npm install
 npm run build
 ```
@@ -33,11 +33,11 @@ The noop backend applies a deterministic inventory extraction (facade + `service
 
 | Command | Purpose |
 |---------|---------|
-| `mono-cut init --root <repo>` | Write `campaign.yaml` + `.mono-cut/` |
-| `mono-cut analyze --root <repo>` | Index with ast-context, rank seams |
-| `mono-cut extract --root <repo> [--candidate id]` | Extract one candidate through validation |
-| `mono-cut run --root <repo>` | Full pipeline → dry-run PR body |
-| `mono-cut status --root <repo>` | Campaign state |
+| `strangler-agent init --root <repo>` | Write `campaign.yaml` + `.strangler/` |
+| `strangler-agent analyze --root <repo>` | Index with ast-context, rank seams |
+| `strangler-agent extract --root <repo> [--candidate id]` | Extract one candidate through validation |
+| `strangler-agent run --root <repo>` | Full pipeline → dry-run PR body |
+| `strangler-agent status --root <repo>` | Campaign state |
 
 ## campaign.yaml
 
@@ -53,8 +53,8 @@ dryRun: true
 
 ## Safety model
 
-- Work on branch `mono-cut/<campaign-id>`
-- Checkpoint tags `mono-cut/cp/<id>/<n>` before each agent attempt
+- Work on branch `strangler/<campaign-id>`
+- Checkpoint tags `strangler/cp/<id>/<n>` before each agent attempt
 - Rollback to last green checkpoint (or base) when attempts/digests exhaust
 - AST gates: export coverage, signature stability, caller continuity, topology
 - PR only after AST + tests (+ optional CI) pass

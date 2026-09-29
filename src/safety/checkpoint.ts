@@ -27,7 +27,7 @@ function git(cwd: string, args: string[]): Promise<{ code: number; stdout: strin
   });
 }
 
-const GIT_IDENT = ["-c", "user.email=mono-cut@local", "-c", "user.name=mono-cut"];
+const GIT_IDENT = ["-c", "user.email=strangler-agent@local", "-c", "user.name=strangler-agent"];
 
 export async function ensureGitRepo(cwd: string): Promise<void> {
   const status = await git(cwd, ["rev-parse", "--is-inside-work-tree"]);
@@ -38,7 +38,7 @@ export async function ensureGitRepo(cwd: string): Promise<void> {
       ...GIT_IDENT,
       "commit",
       "-m",
-      "chore: initial commit for mono-cut campaign",
+      "chore: initial commit for strangler-agent campaign",
       "--allow-empty",
     ]);
   }
@@ -78,19 +78,19 @@ export async function createCheckpoint(
 ): Promise<CheckpointResult> {
   await git(cwd, [...GIT_IDENT, "add", "-A"]);
   // Do not snapshot campaign metadata into extraction commits
-  await git(cwd, ["reset", "HEAD", "--", ".mono-cut", "campaign.yaml"]);
+  await git(cwd, ["reset", "HEAD", "--", ".strangler", "campaign.yaml"]);
   const commit = await git(cwd, [
     ...GIT_IDENT,
     "commit",
     "-m",
-    `mono-cut: ${message}`,
+    `strangler-agent: ${message}`,
     "--allow-empty",
   ]);
   if (commit.code !== 0) {
     throw new Error(`checkpoint commit failed: ${commit.stderr || commit.stdout}`);
   }
   const sha = (await git(cwd, ["rev-parse", "HEAD"])).stdout;
-  const ref = `mono-cut/cp/${campaignId}/${n}`;
+  const ref = `strangler/cp/${campaignId}/${n}`;
   await git(cwd, ["tag", "-f", ref, sha]);
   return { ref, sha };
 }

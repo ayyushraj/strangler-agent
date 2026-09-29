@@ -61,7 +61,7 @@ export function getInventoryLevel(sku: string): number {
 }
 
 // Fresh git baseline so prior campaign commits cannot restore broken files
-for (const p of [".git", ".mono-cut", ".ast-context", "services", "campaign.yaml"]) {
+for (const p of [".git", ".strangler", ".ast-context", "services", "campaign.yaml"]) {
   const abs = resolve(fixture, p);
   if (existsSync(abs)) rmSync(abs, { recursive: true, force: true });
 }

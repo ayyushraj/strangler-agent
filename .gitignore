@@ -1,9 +1,9 @@
 node_modules/
 dist/
-.mono-cut/
+.strangler/
 *.log
 .DS_Store
 fixtures/demo-monolith/node_modules/
 fixtures/demo-monolith/dist/
 fixtures/demo-monolith/.ast-context/
-fixtures/demo-monolith/.mono-cut/
+fixtures/demo-monolith/.strangler/
