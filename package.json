@@ -1,0 +1,33 @@
+{
+  "name": "mono-cut",
+  "version": "0.1.0",
+  "description": "Automated monolith-to-microservice refactoring engine — orchestration, AST gates, agent loops, rollback, PR on green",
+  "type": "module",
+  "bin": {
+    "mono-cut": "./bin/mono-cut.js"
+  },
+  "main": "./dist/cli.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/cli.ts",
+    "start": "node dist/cli.js",
+    "smoke": "npm run build && node scripts/smoke.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^13.1.0",
+    "yaml": "^2.7.0",
+    "zod": "^3.24.2"
+  },
+  "optionalDependencies": {
+    "@cursor/sdk": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
+  }
+}
