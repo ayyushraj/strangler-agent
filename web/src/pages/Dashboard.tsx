@@ -203,13 +203,22 @@ export function Dashboard() {
           Peel a seam from a monolith with button-driven analyze, extract, and
           rollback — PATs and code stay on this machine.
         </p>
-        <p className="mt-3 font-mono text-xs text-ink/50">
-          API{" "}
+        <p className="mt-5 inline-flex items-center gap-2 border border-line/20 bg-paper/70 px-2.5 py-1 font-mono text-[11px] text-ink/70">
+          <span
+            className={[
+              "inline-block h-1.5 w-1.5 rounded-full",
+              serverOk === null
+                ? "bg-ink/30"
+                : serverOk
+                  ? "bg-moss"
+                  : "bg-rust",
+            ].join(" ")}
+          />
           {serverOk === null
-            ? "checking…"
+            ? "API checking"
             : serverOk
-              ? "127.0.0.1:8787 · online"
-              : "offline — run npm run dev:server"}
+              ? "API online · 127.0.0.1:8787"
+              : "API offline · npm run dev:server"}
         </p>
       </header>
 
