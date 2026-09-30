@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Source Sans 3", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --color-ink: #1a1c19;
+  --color-paper: #e8e4d9;
+  --color-mist: #d4cfc3;
+  --color-moss: #3d5a45;
+  --color-rust: #a34a2e;
+  --color-line: #2a2d28;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  background:
+    radial-gradient(ellipse 120% 80% at 10% -10%, #f3efe4 0%, transparent 55%),
+    radial-gradient(ellipse 90% 60% at 100% 0%, #cfd8cc 0%, transparent 45%),
+    linear-gradient(165deg, #ebe6da 0%, #d9d3c6 48%, #cfc8ba 100%);
+  background-attachment: fixed;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cpath d='M0 60h120M60 0v120' stroke='%232a2d28' stroke-opacity='0.06' stroke-width='1'/%3E%3C/svg%3E");
+  z-index: 0;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes rail-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes log-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-rail {
+  animation: rail-fill 0.55s ease-out both;
+  transform-origin: left center;
+}
+
+.animate-log {
+  animation: log-in 0.28s ease-out both;
+}
+
+.pressable:active {
+  transform: translateY(1px);
+}
