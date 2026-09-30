@@ -23,7 +23,7 @@ export function ActionBar(props: Props) {
           disabled={!props.connected || props.busy}
           onClick={props.onAnalyze}
         >
-          Analyze workspace
+          {props.busy ? "Working…" : "Analyze workspace"}
         </button>
         <button
           type="button"
@@ -31,7 +31,7 @@ export function ActionBar(props: Props) {
           disabled={!props.connected || props.busy || !props.canRun}
           onClick={props.onRun}
         >
-          Run extraction
+          {props.busy ? "Working…" : "Run extraction"}
         </button>
         <button
           type="button"
@@ -39,7 +39,7 @@ export function ActionBar(props: Props) {
           disabled={!props.hasJob || props.busy}
           onClick={props.onRollback}
         >
-          Manual git rollback
+          {props.busy ? "Working…" : "Manual git rollback"}
         </button>
 
         <label className="ml-auto flex items-center gap-2 text-sm text-ink/70">
