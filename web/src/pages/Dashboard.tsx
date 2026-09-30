@@ -21,6 +21,7 @@ import { RepoForm } from "../components/RepoForm";
 import { ActionBar } from "../components/ActionBar";
 import { ProgressRail } from "../components/ProgressRail";
 import { LogStream } from "../components/LogStream";
+import { CandidateList } from "../components/CandidateList";
 
 export function Dashboard() {
   const [repoUrl, setRepoUrl] = useState(loadRepoUrl);
@@ -70,7 +71,7 @@ export function Dashboard() {
     if (event.type === "log") appendLog(event.line);
     if (event.type === "candidates") {
       setCandidates(event.items);
-      if (event.items[0] && !selected) setSelected(event.items[0].id);
+      setSelected(event.items[0]?.id ?? "");
     }
     if (event.type === "result") {
       setBusy(false);
@@ -246,35 +247,11 @@ export function Dashboard() {
       <ProgressRail phase={phase} attempt={attempt} maxAttempts={maxAttempts} />
       <LogStream lines={logs} />
 
-      {candidates.length > 0 && (
-        <section className="mt-12 max-w-3xl">
-          <h2 className="font-display text-2xl font-medium text-ink">
-            Extraction candidates
-          </h2>
-          <ul className="mt-4 space-y-2">
-            {candidates.map((c) => (
-              <li key={c.id}>
-                <label className="flex cursor-pointer items-start gap-3 border border-line/20 bg-paper/50 px-3 py-3 hover:border-line/40">
-                  <input
-                    type="radio"
-                    name="candidate"
-                    checked={selected === c.id}
-                    onChange={() => setSelected(c.id)}
-                    className="mt-1"
-                  />
-                  <span>
-                    <span className="font-mono text-sm font-semibold">{c.id}</span>
-                    <span className="mt-1 block text-sm text-ink/65">
-                      {c.directory} · risk {c.riskScore.toFixed(1)} · coupling{" "}
-                      {c.coupling} · {c.files.length} files
-                    </span>
-                  </span>
-                </label>
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      <CandidateList
+        candidates={candidates}
+        selected={selected}
+        onSelect={setSelected}
+      />
 
       {prBody && (
         <section className="mt-12 max-w-3xl">
